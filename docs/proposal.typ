@@ -32,21 +32,15 @@
 
 The sport of speed climbing made its debut on the world stage in the 2020 Tokyo Olympic Games due to its remarkable surge in popularity in recent years. This rise from a niche discipline to a mainstream competitive activity has underscored the need for sophisticated tools to analyze climbers' movements that will analyze and optimize training methodologies.
 
-The goal of a speed climber is to navigate up a 15-meter vertical wall containing commonly placed climbing holds with precise and swift body positions in the shortest time possible. The primary challenge for coaches in speed climbing lies in separating and grading specific movements and sequences in a rapid and dynamic climbing run. This fast-paced format makes conventional pose estimation techniques less effective, necessitating a specially trained system capable of processing data swiftly to provide immediate feedback. This system's absence hinders the ability of climbers and coaches to enhance performance between runs in the same climbing session. Addressing this gap is critical for advancing training methodologies in speed climbing and can have broader implications for motion analysis in other high-velocity sports and activities.
+The goal of a speed climber is to navigate up a 15-meter vertical wall containing commonly placed climbing holds with precise and swift body positions in the shortest time possible. The primary challenge for coaches in speed climbing lies in separating and grading specific movements and sequences in a rapid and dynamic climbing run. This fast-paced format makes conventional pose estimation techniques less effective, necessitating a specially trained system capable of processing data swiftly to provide immediate feedback. Addressing this gap is critical for advancing training methodologies in speed climbing and can have broader implications for motion analysis in other high-velocity sports and activities.
 
 This project aims to develop a deep neural network model tailored explicitly for speed climbing capable of detecting and overlaying skeletal coordinates onto live video feeds of climbers. The neural network will process individual video frames as input and output the coordinate positions of critical joints, including feet, hips, hands, elbows, and knees. For each frame of the climbing run, a complimentary Python script will then use these coordinates to produce a skeletal overlay, connecting the joints with lines to visualize the climber's real-time posture and movement. The video will then be reconstructed to produce a live skeleton overlay on the climber.
-
-This project leverages high-quality competition data from the 2018-2020 Olympic speed climbing runs to train and validate the neural network. The project seeks to produce a model that can accurately depict pose estimation for a new speed climb run by harnessing advanced neural network architectures and processing techniques tailored to high-speed and intricate movements. This project has the potential to make significant contributions to the field of neural networks and computer vision by precisely tuning to quick, real-time motion analysis using speed climbing, which will enable more precise and immediate feedback mechanisms for climbers and may be adapted to other fast-paced sports. The successful implementation of this system could revolutionize how motion analysis is conducted in speed climbing, offering a scalable and non-invasive solution. The methodologies developed could also be adapted for other sports and activities involving rapid and complex movements, thereby broadening the impact within the broader neural networks and artificial intelligence fields.
 
 = Objective
 There is a lack of an accurate quick real-time model of a climber's body during their speed climb. We plan to build a model that will capture the skeletal coordinates of the climber and overlay them in a real-time video using a deep neural network. This will allow coaches and climbers to more quickly spot mistakes made during a climb without the need to wait in between climbing sections. It is our goal to develop this revolutionary tool using a deep convolution neural network model which will allow our model to be greatly optimised allowing for real-time viewing and application. 
 
 
 = Related Work
-
-Overlaying skeletons onto human bodies is a widely studied field  with a blind spot for algorithms specialised for climbing. One study looks at climbers body position and motions to spot errors made by the climber while they are bouldering.@Bouldering This is done by mapping a skeleton over the climber mapping the joints and then following the motions to determine when the climber makes mistakes. Well this model takes too long to be used for speed climbing, the training information used in this model will greatly improve our accuracy of recognizing climbing-specific positioning. 
-
-
 
 In their research, Pieprzycki et al. @202302.0166 investigated methods to analyze speed climbers' runs through video recordings. They developed a system that captures spatial and temporal parameters of climbers' movements without requiring intrusive sensors utilizing high-frame-rate cameras and visual markers placed near the climber's center of mass for effective tracking. Their approach employed algorithms such as the Kanade-Lucas-Tomasi (KLT) tracker and the OpenPose convolutional neural network for keypoint detection. This methodology allowed for the extraction of various kinematic parameters, including velocity, acceleration, and movement trajectories, providing valuable insights into climbers' performance.
 While their work showcased the potential of video analysis in evaluating climbers, its dependence on physical markers and post-processing limits its practicality for realtime applications. There is a clear need for a noninvasive, efficient system capable of realtime pose estimation that can handle the rapid and complex movements characteristic of speed climbing.
@@ -75,11 +69,7 @@ Model Efficiency and Real-Time Performance
 - Inference Speed (Frames Per Second): We will measure the model's inference speed to ensure real-time performance when overlaying skeletons onto live video feeds. The target benchmark is a minimum of 30 frames per second (FPS) on a conventional laptop brought to the climbing event. This laptop will capture logging information encapsulating the model's computational requirements, including CPU and GPU usage, to evaluate its suitability for deployment on various portable devices.
 Robustness and Generalization
 - Cross-Condition Evaluation: To ensure robustness, the model's performance will be fed a custom testing set collected under diverse conditions, with the lighting variation, image capture angle, climber attire, and background complexities controlled.
-- Occlusion Handling: We will assess the model's ability to accurately predict joint positions in scenarios where parts of the climber's body are partially or fully occluded. This would be useful for poorly shot videos where the climber's feet may be out of frame.
-Qualitative Analysis
-- Visual Inspection: In addition to the above quantitative metrics, we will conduct a qualitative assessment by overlaying the predicted skeleton onto video frames and visually inspecting for alignment and anatomical plausibility.
-Baseline Comparison
-- Benchmark Against Existing Models: We will compare our performance with established pose estimation models, such as OpenPose or HRNet, using the same input training video frames and valuation metrics to contextualize our results
+
 
 = Expected Results and Analysis
 
@@ -88,13 +78,10 @@ We anticipate that our deep neural network model will achieve high accuracy in e
 
 High Accuracy in Joint Localization
 - Expected Outcomes: We expect the model to achieve a Mean Absolute Error (MAE) of less than 5 pixels on average and a Percentage of Correct Keypoints (PCK) exceeding 85%.
-- Analysis Plan: We will perform per-joint and overall evaluations to identify any joints with consistently higher errors. Statistical analysis will include computing each joint's mean, median, and standard deviation of errors. Generated Heatmaps of error distributions will visualize areas needing improvement.
+- Analysis Plan: We will perform per-joint and overall evaluations to identify any joints with consistently higher errors.
 Real-Time Processing Capability
 - Expected Outcomes: The model should maintain an inference speed of at least 30 FPS on a standard GPU-equipped laptop system.
 - Analysis Plan: We will profile the model's computational performance using the psutil Python package and NVIDIA's Nsight Systems to identify bottlenecks. We will optimize the model through techniques such as model pruning or quantization if necessary.
-Robust Performance Across Diverse Conditions
-- Expected Outcomes: The model should maintain consistent accuracy across different test conditions, with less than a 5% variance in PCK scores between conditions.
-- Analysis Plan: We will use statistical tests such as ANOVA to determine if differences in performance across conditions are statistically significant. We will also analyze the model's robustness to occlusions by evaluating its performance on occluded vs. non-occluded data subsets.
 Statistical and Computational Techniques
 - Error Distribution Analysis: We will examine the distribution of errors across joints using histograms and box plots to assess model bias and variance.
 - Confidence Intervals: We will quantify the reliability of our performance estimates by calculating 95% confidence intervals for the MAE and PCK metrics mentioned above.
@@ -105,7 +92,7 @@ Comparison with Baseline Models
 
 = Timeline
 #figure(
-  image("timeline.png", width: 95%),
+  image("timeline.png", width: 100%),
   caption: [
     Our Timeline
   ],
