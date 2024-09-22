@@ -41,7 +41,7 @@ There is a lack of an accurate quick real-time model of a climber's body during 
 
 
 = Related Work
-
+Overlaying skeletons onto human bodies is a widely studied field  with a blind spot for algorithms specialised for climbing. One study looks at climbers body position and motions to spot errors made by the climber while they are bouldering.@Bouldering This is done by mapping a skeleton over the climber mapping the joints and then following the motions to determine when the climber makes mistakes. Well this model takes too long to be used for speed climbing, the training information used in this model will greatly improve our accuracy of recognizing climbing-specific positioning.
 In their research, Pieprzycki et al. @202302.0166 investigated methods to analyze speed climbers' runs through video recordings. They developed a system that captures spatial and temporal parameters of climbers' movements without requiring intrusive sensors utilizing high-frame-rate cameras and visual markers placed near the climber's center of mass for effective tracking. Their approach employed algorithms such as the Kanade-Lucas-Tomasi (KLT) tracker and the OpenPose convolutional neural network for keypoint detection. This methodology allowed for the extraction of various kinematic parameters, including velocity, acceleration, and movement trajectories, providing valuable insights into climbers' performance.
 While their work showcased the potential of video analysis in evaluating climbers, its dependence on physical markers and post-processing limits its practicality for realtime applications. There is a clear need for a noninvasive, efficient system capable of realtime pose estimation that can handle the rapid and complex movements characteristic of speed climbing.
 Our project seeks to address this gap by developing a deep neural network model tailored explicitly for speed climbing. This model aims to enable realtime skeletal overlays on live video feeds without requiring markers, thereby enhancing the applicability and scalability of pose estimation in the sport. Our model will build upon the foundation established by Pieprzycki et al., moving towards a more practical and immediate analysis tool for athletes and coaches alike.
@@ -50,7 +50,7 @@ Our application requires our model to be extremely lightweight, and able to anal
 
 = Methods
 
-Our approach is modeled after the architecture proposed in Lite-HRNet @yu2021litehrnetlightweighthighresolutionnetwork, where our images are passed through the high resolution network and fused with high-to-low streams. This entire process is a subset of the deep convolution neural network model. The approach taken in Lite-HRNet proposes novel optimizations which are greatly beneficial for our real-time application. Being significantly lighter, while maintaining the accuracy presented by significantly larger and slower models, this architecture meets all of the objectives of our research. We also look to include the climbing position-specific training information used in models trained for bouldering @Bouldering. This should improve our model accuracy in recognizing climbing-specific positioning, which is typically not included in standard HPE training sets including COCO @lin2015microsoftcococommonobjects. This combination and training approach is novel and will greatly improve the accuracy of our model when tested on speed climbing data.
+Our approach is modeled after the architecture proposed in Lite-HRNet @yu2021litehrnetlightweighthighresolutionnetwork, where our images are passed through the high resolution network and fused with high-to-low streams. This entire process is a subset of the deep convolution neural network model. The approach taken in Lite-HRNet proposes novel optimizations which are greatly beneficial for our real-time application. Being significantly lighter, while maintaining the accuracy presented by significantly larger and slower models, this architecture meets all of the objectives of our research. We also look to include the climbing position-specific training information used in models trained for bouldering @Bouldering. This should improve our model accuracy in recognizing climbing-specific positioning, which is typically not included in standard HPE training sets including COCO @lin2015microsoftcococommonobjects. 
 
 
 
@@ -66,14 +66,14 @@ Joint Localization Accuracy
 - Mean Absolute Error (MAE): We will calculate the MAE between the predicted joint coordinates and the ground truth annotations for each key joint—feet, hips, hands, elbows, and knees. This metric provides an average measure of the key joint's prediction error in pixels.
 - Percentage of Correct Keypoints (PCK): The PCK metric assesses the percentage of correctly predicted joints within a specified threshold distance from the ground truth. We will use thresholds based on a fixed pixel value.
 Model Efficiency and Real-Time Performance
-- Inference Speed (Frames Per Second): We will measure the model's inference speed to ensure real-time performance when overlaying skeletons onto live video feeds. The target benchmark is a minimum of 30 frames per second (FPS) on a conventional laptop brought to the climbing event. This laptop will capture logging information encapsulating the model's computational requirements, including CPU and GPU usage, to evaluate its suitability for deployment on various portable devices.
+- Inference Speed (Frames Per Second): We will measure the model's inference speed to ensure real-time performance when overlaying skeletons onto live video feeds. The target benchmark is a minimum of 30 frames per second (FPS) on a conventional laptop brought to the climbing event. 
 Robustness and Generalization
 - Cross-Condition Evaluation: To ensure robustness, the model's performance will be fed a custom testing set collected under diverse conditions, with the lighting variation, image capture angle, climber attire, and background complexities controlled.
 
 
 = Expected Results and Analysis
 
-We anticipate that our deep neural network model will achieve high accuracy in estimating the positions of key joints in speed climbing videos and will operate efficiently enough for real-time applications. The following outlines our expected outcomes and the methods we will use to analyze and interpret the results. Analysis of this data will validate our approach's effectiveness and provide insights for future improvements and suitability for potential adaptations to other high-velocity sports motion analysis applications.
+We anticipate that our deep neural network model will achieve high accuracy in estimating the positions of key joints in speed climbing videos and will operate efficiently enough for real-time applications. The outline below shows our expected outcomes and the methods we will use to analyze and interpret the results. 
 
 
 High Accuracy in Joint Localization
@@ -84,7 +84,6 @@ Real-Time Processing Capability
 - Analysis Plan: We will profile the model's computational performance using the psutil Python package and NVIDIA's Nsight Systems to identify bottlenecks. We will optimize the model through techniques such as model pruning or quantization if necessary.
 Statistical and Computational Techniques
 - Error Distribution Analysis: We will examine the distribution of errors across joints using histograms and box plots to assess model bias and variance.
-- Confidence Intervals: We will quantify the reliability of our performance estimates by calculating 95% confidence intervals for the MAE and PCK metrics mentioned above.
 - Cross-Validation: We will employ k-fold cross-validation to ensure that the model's performance is generalizable and not a result of overfitting the training data.
 Comparison with Baseline Models
 - Expected Outcomes: When evaluated on the same input data, our model's accuracy and efficiency should outperform or be competitive with existing models.
