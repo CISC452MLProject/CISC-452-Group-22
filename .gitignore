@@ -5,3 +5,5 @@ pyvenv.cfg
 /etc
 /include
 CACHEDIR.TAG
+
+/videos
