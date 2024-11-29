@@ -1,0 +1,10 @@
+/lib
+pyvenv.cfg
+/share
+/Scripts
+/etc
+/include
+CACHEDIR.TAG
+
+/videos
+videos.zip
