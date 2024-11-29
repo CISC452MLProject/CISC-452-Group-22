@@ -1,5 +1,5 @@
 52_2018-07-28_1;52;2018-07-28;1;https://www.youtube.com/watch?v=gov-xssWc0E;1625.81;1631.72;5.91;148;1;l;25
-50_2018-07-28_1;50;2018-07-28;1;https://www.youtube.com/watch?v=gov-xssWc0E;1625.8;1631.8;6.0;150;1;r;25
+50_2018-07-28_1;50;2018-07-28;1;https://www.youtube.com/watch?v=gov-xssWc0E;1625.81;1631.8;6.0;150;1;r;25
 25_2018-07-28_1;25;2018-07-28;1;https://www.youtube.com/watch?v=gov-xssWc0E;1697.68;1703.84;6.16;154;1;l;25
 17_2018-07-28_1;17;2018-07-28;1;https://www.youtube.com/watch?v=gov-xssWc0E;1697.68;1704.0;6.32;158;1;r;25
 41_2018-07-28_1;41;2018-07-28;1;https://www.youtube.com/watch?v=gov-xssWc0E;1768.21;1774.48;6.27;157;1;l;25
