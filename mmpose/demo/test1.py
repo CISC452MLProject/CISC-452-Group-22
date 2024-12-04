@@ -12,6 +12,8 @@ python_executable=os.path.realpath('\\'.join(__file__.split('\\')[:-3])+'\\Scrip
 pos_config = requests.get(pos_config_url).content
 dec_checkpoint = requests.get(dec_checkpoint_url).content
 
+training = '../training_climbData.json'
+
 # command = [python_executable, "demo/topdown_demo_with_mmdet.py", "demo/mmdetection_cfg/rtmdet_m_640-8xb32_coco-person.py", dec_checkpoint_url,
 #            "configs/body_2d_keypoint/rtmpose/body8/rtmpose-m_8xb256-420e_body8-256x192.py",
 #             pos_config_url, "--input", "../cropped/34_2018-07-06_2.mp4", "--output-root=vis_results/demo", "--show", "--draw-heatmap" ]
@@ -20,6 +22,7 @@ command = [python_executable, "demo/topdown_demo_with_mmdet.py", "demo/mmdetecti
            "configs/body_2d_keypoint/topdown_heatmap/coco/td-hm_litehrnet-30_8xb32-210e_coco-384x288.py",
             pos_config_url, "--input", "../cropped/34_2018-07-06_2.mp4", "--output-root=vis_results/demo", "--show", "--draw-heatmap" ]
 # mmpose/configs/body_2d_keypoint/topdown_heatmap/coco/td-hm_litehrnet-18_8xb32-210e_coco-384x288.py
+# command = ["python_executable", "tools/misc/generate_bbox_file.py", "demo/mmdetection_cfg/rtmdet_m_8xb32-300e_coco.py", dec_checkpoint_url,"bbox.json", "--pose-config", training ]
 
 print(command)
 print(os.path.realpath('\\'.join(__file__.split('\\')[:-2])))
