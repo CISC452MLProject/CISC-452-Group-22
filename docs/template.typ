@@ -29,7 +29,7 @@
   set document(title: title, author: authors.map(author => author.name))
 
   // Set the body font.
-  set text(font: "Times New Roman", size: 8pt)
+  set text(font: "Times New Roman", size: 10pt)
 
   // Configure the page.
   set page(
@@ -103,7 +103,7 @@
 
   // Display the paper's title.
   v(3pt, weak: true)
-  align(center, text(12pt, title))
+  align(center, text(18pt, title))
   v(8.35mm, weak: true)
 
   // Display the authors list.
@@ -113,9 +113,9 @@
     let slice = authors.slice(i * 3, end)
     grid(
       columns: slice.len() * (1fr,),
-      gutter: 4pt,
+      gutter: 12pt,
       ..slice.map(author => align(center, {
-        text(8pt, author.name)
+        text(12pt, author.name)
         if "department" in author [
           \ #emph(author.department)
         ]
@@ -132,13 +132,13 @@
     )
 
     if not is-last {
-      v(8pt, weak: true)
+      v(16pt, weak: true)
     }
   }
-  v(15pt, weak: true)
+  v(40pt, weak: true)
 
   // Start two column mode and configure paragraph properties.
-  show: columns.with(2, gutter: 10pt)
+  show: columns.with(2, gutter: 12pt)
   set par(justify: true, first-line-indent: 1em)
   show par: set block(spacing: 0.65em)
 
