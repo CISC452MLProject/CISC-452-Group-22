@@ -47,7 +47,7 @@ The motivation for this project stems from the need to bridge this gap by develo
 This report represents the collaborative efforts of the group, with each member contributing specific expertise to various aspects of the project:
 - Manny Cassar: Developed the data ingestion and preprocessing pipeline, ensuring the dataset was formatted correctly for training and analysis.
 - Kieran Green: Implemented the model architecture using Lite-HRNet, focusing on optimization for real-time performance.
-- Mike Stefan: Conducted benchmarking and results analysis, comparing the system's performance against state-of-the-art models and identifying areas for improvement.
+- Mike Stefan: Created the video collection and seperation pipeline. Configured the project setup and its dependancies to allow for development. Conducted benchmarking and results analysis, comparing the system's performance against state-of-the-art models and identifying areas for improvement.
 Each contribution played a crucial role in achieving the project's objectives, demonstrating the importance of interdisciplinary collaboration in solving complex engineering problems.
 
 
@@ -76,7 +76,7 @@ Video Data:
 - Videos are segmented into frames, capturing climbers' movements in high resolution.
 
 Joint Coordinate Data:
-- Each frame includes XY coordinates for 16 critical joints (e.g., feet, hips, hands, elbows, knees) represented in a COCO-compliant format.
+- Each frame includes XY coordinates for 16 critical joints (e.g., feet, hips, hands, elbows, knees)
 - Metadata files provide additional context, such as run identifiers, timestamps, and wall orientation.
 
 = Challenges in Dataset Preparation
@@ -94,44 +94,39 @@ Specialization:
 
 Preprocessing Pipeline
 A robust preprocessing pipeline was developed to transform raw video data into training-ready formats. The key steps include:
-It extracts relevant metadata from videos.
-Parsing skeleton data files to derive joint coordinates.
-Generating JSON annotations compatible with the MMPose training framework.
+- Video collection
+- Clip extraction
+- Frame seperation
+- Parsing skeleton data files to derive joint coordinates.
+- Generating JSON annotations compatible with the MMPose training framework.
+
+The video collection was done manually via downloading the competition streams off YouTube. The intial plan for this was to have the pipline download them, but due to changes to YouTube's video cyphering system, the existing Python tooling to do this was rendered non-functional. To still collect the videos, we download them using #link("https://y2meta.tube/"). This wasnt too bad as the dataset only contained 17 videos and could trivailly be mass exported. 
+
+The next step is to extract the clippeds as specified in the metadata file. For this we iterated over the data set, finding the start and stop time for each video segment and using FFMPEG @ffmpeg, the desired clip was extracted. These clips were then split by frame into individual frames, to be associated with the pose data. The pose data found in the data set was converted to math the COCO @lin2015microsoftcococommonobjects format. This format was selected because it is an industry standard within human pose estimation. As this standard, all algorithms we researched already have implementations for training on COCO datasets. By conforming our data we make training on our dataset easier.
+
 Below is a snapshot of a preprocessed dataset entry in COCO format:
 
-{
+```{
 
 "images": [
-
-{"id": 1, "file_name": "run1_frame1.jpg", "height": 1080, "width": 1920}
-
+  {"id": 1, "file_name": "run1_frame1.jpg", "height": 1080, "width": 1920}
 ],
 
 "annotations": [
-
-{
-
-"id": 1,
-
-"image_id": 1,
-
-"category_id": 1,
-
-"keypoints": [320, 480, 2, 400, 520, 2, ...],
-
-"num_keypoints": 16
-
-}
-
+  {
+    "id": 1,
+    "image_id": 1,
+    "category_id": 1,
+    "keypoints": [320, 480, 2, 400, 520, 2, ...],
+    "num_keypoints": 16
+  }
 ],
 
 "categories": [
-
-{"id": 1, "name": "person", "keypoints": ["nose", "left_eye", ...]}
-
+  {"id": 1, "name": "person", "keypoints": ["nose", "left_eye", ...]}
 ]
 
-}
+}``` 
 
 
 Frames: 
@@ -182,26 +177,32 @@ A simplified architecture diagram is presented below:
 
 Input Image --> High-Resolution Stream --> Stream Fusion --> Output Keypoints
 
+We are using LiteHRNet as it is implemented in the MMPose @mmpose2020 project. This project comes with an open-sourced implementation of the algorithm with tooling to test and train the model. This algorithm is implemented in a top down fashion. This means that first an algorithm is run to detect where to humans are in frame, hence forth called the detection layer, then LiteHRNet is run within the bounding boxes to generate our human pose estimation. For our detection layer we selected RTMDet @lyu2022rtmdetempiricalstudydesigning. This algorithm is an extremely efficient and accurate general object detetion and classifier. It showed to be accurate enough for our application, but further research into this could be warrented. Either further research into lighter models, or training this one on our dataset could pose to be beneficial.
+
 Training Setup
 
 Hardware Configuration:
-- GPU: NVIDIA GTX 1070
-- CPU: Ryzen 5600
+- GPU: NVIDIA GTX 4070
+- CPU: I7-137000H
 - Memory: 64 GB RAM
 
 Software Tools:
-- Framework: PyTorch
+- Framework: PyTorch with CUDA 11.7
 - Libraries: MMPose, MMEngine
 - OS: Windows 10
 - Dataset: Preprocessed COCO-style annotations derived from climbing video data.
 
-Challenges in Training
-- Dependency Conflicts: Compatibility issues with MMPose libraries delayed initial experiments. Created a virtual environment with isolated dependencies and was unable to resolve conflict.
-- Testing Data being mislabeled: Many of the points in the dataset were not where the climber was in the wall.
+= Challenges in Training:
+There are significant dependancy issues within MMPose, which made all of their built in training tooling usless. With the way the project is currently structured and implemented, re-training an existing algorithm is non-functional. To get around these issues we attempted to implement the training algorithm ourselves. Through the process of implementing this we found a significantLY larger issue. This issue can be illistrated perfectly in @error. #figure(image("../test.jpg"), caption: [ Overlay of the dataset points over the frame])<error>
 
-Training Results
-- Unfortunately we did not find out about the mislabeled data in the dataset we used untill it was too late. At first it was thought that the model was not working and that was it was incorrect. Since most of the code was based around the data format of that dataset we were unable to find another suitable dataset in time.
+@error shows the joint data from our dataset overlayed over the frame specified in the dataset. This clearly shows that the pose data contained within our dataset is incorrect. This could be rooted in two different places. Either the dataset is incorrect or our method of frame spliting and then aligning it to the dataset frame number is incorrect. In the process of finding the root of this issue, we compared similar tests to that from from a wide range of videos, as found that all of them had pose data that did not align to the video, not just the frame did not match, but all showed positions that the climber was never in. This leads us to the results that our dataset was fundementally flawed.
 
+Due to the timeline of this project, and when we discouvered this issue we were unable to transition to a different dataset. Since all of our code was based around this dataset, a pivot was virtually impossible, ignoring the fact that a different high quality opensourced dataset is not readily available.
+
+Since the dataset was unable to provide any useful data to compare the output of a pretrained model, or to custom train LiteHRNet, we were unable to produce any quantifiable comparision or validation scores.
+
+= Discussion
+Our selection of LiteHRNet showed promising results. It was able to generate an output in real time, which visually looks like it could be an accurate representation of the climbers #figure(image("../good.png"), caption: [The visual output of LiteHRNet])<output> As shown in @output, this model is able to generate images which appear to work. Due to the afformentioned dataset issues, we lack quantifiable results to compare the models output, we can see some issues which further training would improve our performance. Most of the issues which can be observed qualitatively, including the detection model detecting some of the holds as people. That could be improved in a future iteration of our project by traing the detection algorithm on our dataset. Another issue we observed included estimation confusion for limbs obstructed by the climbers body. 
 
 = Conclusion
-This project was an attempt to develop a real-time pose estimation system tailored for speed climbing using the Lite-HRNet architecture. The model should have balanced accuracy and speed, meeting the requirements for live video analysis while providing actionable feedback for athletes and coaches. We were unable to train the model given the dataset and internal model errors.
+This project was an attempt to develop a real-time pose estimation system tailored for speed climbing using the Lite-HRNet architecture. The model should have balanced accuracy and speed, meeting the requirements for live video analysis while providing actionable feedback for athletes and coaches. We were unable to train the model given the dataset and internal model errors. The future work on this project would be to find or create a dataset which meets our requirements. Most of the challenges which we could not address were consequences of our dataset being incorrect. Once a new dataset is acquired, we can improve our accuracy by trainging both the detection and LiteHRNet models, which should provide better results. The other major gain we would recieve from a functional dataset would be accurate profiling and validation tools. Without a accurate dataset, we were unable to generate valid comparision to see paths of improvement.

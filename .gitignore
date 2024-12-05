@@ -5,6 +5,7 @@ pyvenv.cfg
 /etc
 /include
 CACHEDIR.TAG
+*.pyc
 
 /videos
 videos.zip
